@@ -1,0 +1,27 @@
+{
+  "name": "contract-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Marina Luiza Lardizabal Vieira",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "dev:debug": "ts-node-dev --transpile-only --respawn --inspect=4321  src/app.ts",
+    "dev:server": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/app.ts",
+    "start": "ts-node src/app.ts"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "fs": "^0.0.1-security",
+    "multer": "^1.4.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/multer": "^1.4.7",
+    "ts-node": "^10.3.0",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.4.4"
+  }
+}

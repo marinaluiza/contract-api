@@ -1,0 +1,172 @@
+{
+	"name": "SC_1",
+	
+	"states": {
+	
+		"created": "Created",
+	
+		"in_effect": "In Effect",
+
+		"suspended": "Suspended",
+		
+		"unassign": "Unassign",
+	
+		"successful_termination": "Successful Termination",		
+	
+		"unsuccessful_termination": "Unsuccessful Termination"
+    
+	},
+	
+	"transitions": {
+	
+		"create_contract": {
+			"source": "initial",
+			"target": "created",
+			"events": [{
+				"event": "Create contract",
+				"guard": "",
+				"actions": [
+					"Assign parties ${parties}",
+					"Create obligations ${obligations}",
+					"Create powers ${powers}"
+				]
+			}],
+  			"parties": [""],
+            "obligations": [""],
+            "powers": [""]
+        },
+		
+		"activate_contract":{
+			"source": "created",
+			"target": "in_effect",	
+			"events": [{
+				"event": "Activate contract",
+				"guard": "effectiveDate = actualDate",
+				"actions": [
+					"Activate obligations ${obligations}",
+					"Activate powers ${powers}"
+				]
+			}],
+  			"obligations": [""],
+ 	 		"powers": [""]
+		},
+			
+		"activate_obligation_power": {
+			"source": "in_effect",
+			"target": "in_effect",
+			"events": [{
+				"event": "${event}",
+				"guard": "",
+				"actions": [""]
+			}]
+		},
+
+		"suspend_contract":{
+			"source": "in_effect",
+			"target": "suspended",	
+			"events": [{
+				"event": "Suspended by powers ${powers}",
+				"guard": "",
+				"actions": [
+					"Activate obligations ${obligations_activated}",
+					"Activate powers ${powers_activated}"
+				]
+			}],
+  			"powers": [""],
+  			"obligations_activated": [""],
+  			"powers_activated": [""]
+		},
+				
+		"resume_contract":{
+			"source": "suspended",
+			"target": "in_effect",	
+			"events": [{
+				"event": "Resumed by powers ${powers}",
+				"guard": "",
+				"actions": [
+					"Activate obligations ${obligations_activated}",
+					"Activate powers ${powers_activated}"
+				]
+			}],
+  			"powers": [""],
+			"obligations_activated": [""],
+  			"powers_activated": [""]
+ 		},
+	
+		"revoke_party": {
+			"source": "Active",
+			"target": "unassign",	
+			"events": [{
+				"event": "Revoke parties by power ${powers}",
+				"guard": "",
+				"actions": []
+			}],
+  			"powers": [""]
+		},
+
+		"assign_party": {
+			"source": "unassign",
+			"target": "Active",	
+			"events": [{
+				"event": "Assign parties by power ${powers}",
+				"guard": "",
+				"actions": []
+			}],
+  			"powers": [""]
+		},
+	
+	
+		"fulfill_active_obligations": {
+			"source": "in_effect",
+			"target": "successful_termination",	
+			"events": [{
+				"event": "Fulfill active obligations ${set_of_obligations}",
+				"guard": "",
+				"actions": []
+			}],
+			"set_of_obligations": [[""]]
+		},
+
+		"activate_surviving_obligation": {
+			"source": "successful_termination",
+			"target": "successful_termination",
+			"events": [{
+				"event": "{$event}",
+				"guard": "",
+				"actions": [""]
+			}]
+		},
+
+		"terminate_contract": {
+			"source": "Active",
+			"target": "unsuccessful_termination",	
+			"event": "terminate",
+			"events": [{
+				"event": "Terminated by powers ${powers}",
+				"guard": "",
+				"actions": []
+			},
+			{
+				"event": "Unfulfilled obligations ${obligations_unfulfilled}",
+				"guard": "",
+				"actions": []
+			}],
+			"powers": [""],
+			"obligations_unfulfilled": [[""]]
+		}
+		
+	},
+	"state_actions": {
+		"successful_termination": {
+			"when": "+ On Enter",
+			"action": "Activate surviving obligations ${surviving_obligations}",
+			"surviving_obligations": [""]
+		},
+		"unsuccessful_termination": {
+			"when": "+ On Enter",
+			"action": "Activate surviving obligations ${surviving_obligations}",
+			"surviving_obligations": [""]
+		}
+	}
+	
+}

@@ -1,0 +1,38 @@
+const events : { [key: string]: string } = {
+  "Activated": "Activated",
+  "cACTIVATED": "Contract activated",
+  "Suspended": "Suspended",
+  "cSUSPENDED": "Contract suspended",
+  "Resumed": "Resumed",
+  "cRESUMED": "Contract resumed",
+  "RevokedParty": "Revoked party",
+  "cREVOKED_PARTY": "Revoked party",
+  "AssignedParty": "Assigned party",
+  "cASSIGNED_PARTY": "Revoked party",
+  "FulfilledObligations": "Fulfilled obligations",
+  "cFULFILLED_OBLIGATIONS": "Fulfilled obligations",
+  "Rescinded": "Rescinded",
+  "cRESCINDED": "Contract rescinded",
+  "Terminated": "Terminated",
+  "oTERMINATED": "Terminated obligation",
+};
+const states : { [key: string]: string } = {
+  "Form": "Creation of",
+  "cFORM": "Creation of obligation",
+  "UnAssign": "Effectuation of",
+  "cUNSSIGN": "Effectuation of contract",
+  "InEffect": "Effectuation of",
+  "cIN_EFFECT": "Effectuation of contract",
+  "Suspension": "Suspension of",
+  "cSUSPENSION": "Suspension of contract",
+  "Rescission": "Rescission of",
+  "cRESCISION": "Rescission of contract",
+  "UnsuccessfulTermination": "Unsuccessful termination of",
+  "cUNSUCESSFUL_TERMINATION": "Unsuccessful termination of contract",
+  "SuccessfulTermination": "Unsuccessful termination of",
+  "cSUCESSFUL_TERMINATION": "Unsuccessful termination of contract",
+  "Active": "Activation of",
+  "cACTIVE": "Activation of contract",
+};
+
+export { events, states };
