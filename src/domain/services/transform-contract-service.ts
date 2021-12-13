@@ -1,5 +1,4 @@
 import ContractTransformationInterface from "../interfaces/ContractTransformationInterface";
-import { Contract } from "../interfaces/objects";
 
 class ContractTransformation {
   contractTransformation: ContractTransformationInterface;

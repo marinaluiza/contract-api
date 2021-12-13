@@ -1,20 +1,15 @@
 import ContractTransformationInterface from "../interfaces/ContractTransformationInterface";
-import {
-  Domain,
-  Obligation,
-  LegalPosition,
-  Contract,
-} from "../interfaces/objects";
+
 
 class ContractTransformationSymboleoService
   implements ContractTransformationInterface
 {
-  regexDomain = /^Domain\s(?<domainName>\w*\d*)\n(?<domains>.*)endDomain/s;
+  regexDomain = /^Domain\s(?<domainName>\w*\d*)\n+(?<domains>.*)endDomain/s;
   regexContract =
-    /Contract\s(?<contractName>\w*\d*)\s\((?<parameters>.*)\)\nDeclarations/s;
+    /Contract\s(?<contractName>\w*\d*)\s\((?<parameters>.*)\)\n+Declarations/s;
   regexPowers = /Powers(?<powers>.*)Constraints/s;
-  regexObligations = /Obligations(?<obligations>.*)SurvivingObls/s;
-  regexSurvivingObls = /SurvivingObls(?<obligations>.*)Powers/s;
+  regexObligations = /Obligations(?<obligations>.*)Surviving Obligations/s;
+  regexSurvivingObls = /Surviving Obligations(?<obligations>.*)Powers/s;
 
   public getParts(
     domain: { [key: string]: string },
@@ -22,7 +17,7 @@ class ContractTransformationSymboleoService
   ): string[] {
     const domains: Domain[] = this.createDomain(domain);
     const roleDomains = domains
-      .filter((domain) => domain.specialization === "ROLE")
+      .filter((domain) => domain.specialization === "Role")
       .map((domain) => domain.name);
     const contractParameters = this.readContractParameters(
       contract?.parameters
@@ -133,7 +128,7 @@ class ContractTransformationSymboleoService
     let domains: Domain[] = [];
     domainLines.forEach((line) => {
       const regex =
-        /^(?<name>.*)(isA|isAn)(?<specialization>.*)with(?<attributes>.*)$/s;
+        /^(?<name>.*)(isA|isAn)\s+(?<specialization>.*)with(?<attributes>.*)$/s;
       const result = line.match(regex);
       const attributesArray = result?.groups?.attributes.split(",");
 

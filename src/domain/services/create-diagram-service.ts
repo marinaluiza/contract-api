@@ -1,8 +1,7 @@
-import { Contract, Transition } from "../interfaces/objects";
-import jsonModel from "../resources/diagramModel.json";
+import jsonModel from "../../resources/diagramModel.json";
 import CreateDiagramInterface from "../interfaces/CreateDiagramInterface";
 
-class CreateDiagramService {
+class CreateDiagram {
   createDiagram: CreateDiagramInterface;
 
   constructor(createDiagram: CreateDiagramInterface) {
@@ -144,4 +143,4 @@ class CreateDiagramService {
   };
 }
 
-export default CreateDiagramService;
+export default CreateDiagram;

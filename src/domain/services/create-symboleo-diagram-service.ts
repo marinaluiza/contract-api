@@ -1,16 +1,11 @@
 import CreateDiagramInterface from "../interfaces/CreateDiagramInterface";
-import {
-  Contract,
-  LegalPosition,
-  Transition,
-  Obligation,
-} from "../interfaces/objects";
+
 
 import {events as contractEvents, states as contractStates} from "../enums/symboleo/Contract"
 import {events as obligationEvents, states as obligationStates} from "../enums/symboleo/Obligation"
 import {events as powerEvents, states as powerStates} from "../enums/symboleo/Power"
 
-class CreateDiagramSymboleoService implements CreateDiagramInterface {
+class CreateDiagramSymboleo implements CreateDiagramInterface {
   oblViolationPattern =
     /(oVIOLATION|oVIOLATED|Violated|Violation)\((?<obligation>.+?)\)/;
   powerExertionPattern = /(pEXERTED|pEXERTION|Exerted)\((?<power>.+?)\)/;
@@ -352,4 +347,4 @@ class CreateDiagramSymboleoService implements CreateDiagramInterface {
   }
 }
 
-export default CreateDiagramSymboleoService;
+export default CreateDiagramSymboleo;

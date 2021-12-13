@@ -1,24 +1,14 @@
 {
-	"name": "SC_1",
-	
+	"name": "${name}",
 	"states": {
-	
 		"created": "Created",
-	
 		"in_effect": "In Effect",
-
 		"suspended": "Suspended",
-		
 		"unassign": "Unassign",
-	
 		"successful_termination": "Successful Termination",		
-	
 		"unsuccessful_termination": "Unsuccessful Termination"
-    
 	},
-	
 	"transitions": {
-	
 		"create_contract": {
 			"source": "initial",
 			"target": "created",
@@ -35,7 +25,6 @@
             "obligations": [""],
             "powers": [""]
         },
-		
 		"activate_contract":{
 			"source": "created",
 			"target": "in_effect",	
@@ -50,7 +39,6 @@
   			"obligations": [""],
  	 		"powers": [""]
 		},
-			
 		"activate_obligation_power": {
 			"source": "in_effect",
 			"target": "in_effect",
@@ -60,7 +48,6 @@
 				"actions": [""]
 			}]
 		},
-
 		"suspend_contract":{
 			"source": "in_effect",
 			"target": "suspended",	
@@ -76,7 +63,6 @@
   			"obligations_activated": [""],
   			"powers_activated": [""]
 		},
-				
 		"resume_contract":{
 			"source": "suspended",
 			"target": "in_effect",	
