@@ -14,7 +14,6 @@ class CreateDiagram {
     const newDiagram = { ...jsonModel };
     const setOfFulfilledObligations = this.createDiagram.fulfillObligations();
     let {
-      name,
       transitions: {
         create_contract,
         activate_contract,
@@ -30,7 +29,7 @@ class CreateDiagram {
       state_actions: { successful_termination, unsuccessful_termination },
     } = newDiagram;
 
-    name = contract.name;
+    newDiagram.name = contract.name;
     create_contract.obligations = this.createDiagram.legalPositionsToBeCreated(
       contract.obligations
     );

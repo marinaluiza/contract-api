@@ -25,6 +25,7 @@ class CreateDiagramSymboleo implements CreateDiagramInterface {
     /(?<negation>(NOT|Not|not))?\(?(?<proposition>Occurs|occurs)\((?<situation>.+?),(?<interval>.+?)\)\)?/;
 
   contract: Contract = {
+    name: '',
     parts: [],
     obligations: [],
     powers: [],
