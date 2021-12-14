@@ -1,5 +1,5 @@
 interface Contract {
-    name?: string;
+    name: string;
     parts: string[];
     obligations: Obligation[];
     survivingObligations: Obligation[];

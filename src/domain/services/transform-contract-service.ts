@@ -35,6 +35,7 @@ class ContractTransformation {
     );
 
     return {
+      name: contract?.groups?.contractName || '',
       parts,
       obligations: obligationsObj,
       powers: powersObj,

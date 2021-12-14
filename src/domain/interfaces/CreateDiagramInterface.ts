@@ -1,5 +1,3 @@
-import { Contract, LegalPosition, Transition } from "./objects";
-
 interface CreateDiagramInterface {
   contract: Contract;
   setFulfilledObligations: string[][];

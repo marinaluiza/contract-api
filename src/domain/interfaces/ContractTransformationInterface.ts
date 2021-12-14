@@ -1,10 +1,3 @@
-import {
-  Contract,
-  LegalPosition,
-  Obligation,
-  Domain,
-} from "./objects";
-
 interface ContractTransformationInterface {
   regexDomain: RegExp;
   regexPowers: RegExp;
