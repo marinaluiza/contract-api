@@ -1,0 +1,65 @@
+Domain serviceSaleD
+Tech1 isA Role with name : String, cnpj: String;
+Tech2 isA Role with name : String, cnpj: String;
+ServiceQuality isA Enumeration(GREAT, REGULAR, BAD);
+Service isA Asset with scope : String, quality : ServiceQuality;
+Delivered isA Event with item : Service, delDueD : Date;
+DeliveredLate isA Event with item : Service, report: String, delDueD : Date;
+Paid isA Event with amount : Number, from : Role, to : Role, payDueD : Date;
+PaidLate isA Event with amount : Number, from : Role, to : Role;
+MaintenceByDemand isA Event with valuePerHour : Number;
+MaintenceByMonth isA Event with hours : Number, valuePerMonth : Number;
+MaintenceByDemandOption isA Event with hoursAmount : Number;
+Confidentiality isA Event with contractID : String;
+Competition isA Event with contractID : String;
+endDomain
+
+Contract serviceSaleC (techCompanySeller : Tech1, techCompanyBuyer : Tech2, service : Service,
+	amt : Number, payDueDate : Date, effDate : Date, delDueDateDays : Number, fee: Number,
+	monthlyDemand : Number, valuePerMonth : Number, valuePerHour : Number
+)
+
+Declarations 
+goods : Service with scope := scope, quality := qlt;
+delivered : Delivered with item := service, delDueD := effDate + delDueDateDays;
+paid: Paid with amount := amt/2, from := buyer, to := seller, payDueD := effDate + 15 days;
+paidLate : PaidLate with amount := paidHalf.amount + fee, from := buyer, to := seller;
+deliveredLate : DeliveredLate with item := service;
+maintenceByMonthOption : Event;
+maintenceByMonth : MaintenceByMonth with hours := monthlyDemand, valuePerMonth := valuePerMonth;
+maintenceByDemandOption : Event;
+maintenceByDemand : MaintenceByDemand with valuePerHour := valuePerHour;
+rescisioDeal : Event;
+endOfMonth : Event;
+competition : Competition with contractID := serviceSaleC;
+confidentiality : Confidentiality with contractID := serviceSaleC;
+
+Preconditions
+isOwner(goods, seller);
+
+Postconditions
+isOwner(goods, buyer) AND NOT (isOwner(goods,seller));
+
+Obligations
+O1.5: O(seller, buyer, TRUE, happensBefore(delivered, effDate + delDueDateDays));
+O2.3VII: happens(endOfMonth) -> O(buyer, seller, TRUE, happensBefore(paid, payDueD));
+O2.5III: O(buyer, seller, TRUE, happens(paidLate));
+O3.5: happens(oVIOLATION(O2.5III)) -> O(buyer , seller , TRUE, happensBefore(paidLate, payDueD));
+
+Surviving Obligations
+SO4.2: happens(MaintenceByDemandOption) -> O(seller, buyer, TRUE, maintenceByDemand);
+SO4.3: happens(maintenceByMonthOption) -> O(seller, buyer, TRUE, maintenceByMonth);
+SO5.2: happens(cTERMINATED(serviceSaleC)) -> O(buyer, seller, TRUE, NOT happens(competition, t) AND (t within 1 YEAR AFTER cACTIVATED(serviceSaleC)));
+SO6.1: O(buyer, seller, TRUE, happens(confidentiality));
+
+Powers
+P3.5: happens(oVIOLATION(O2.3VII)) -> P(buyer, seller, TRUE, suspend(serviceSaleC));
+P12.5: happens(rescisionDeal) -> P(seller, buyer, TRUE, cUNSECCESSFUL_TERMINATION(serviceSaleC));
+
+
+Constraints
+NOT(isEqual(buyer, seller));
+forAll o | self.obligation.instance (CannotBeAssigned); 
+forAll p | self.power.instance (CannotBeAssigned);
+
+endContract

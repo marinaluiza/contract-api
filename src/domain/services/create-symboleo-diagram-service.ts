@@ -208,7 +208,7 @@ class CreateDiagramSymboleo implements CreateDiagramInterface {
         (so) => so.trigger && !this.terminateContractPattern.test(so.trigger)
       )
       .map((so) => ({
-        event: so.trigger,
+        event: this.formatEvent(so.trigger),
         guard: "",
         actions: [`Activate obligation <strong>${so.name}</strong>`],
       }));
@@ -309,7 +309,7 @@ class CreateDiagramSymboleo implements CreateDiagramInterface {
     const allStates = {...contractStates, ...obligationStates, ...powerStates}
     if (eventMatch) {
       const event = this.formatPropositionEvent(eventMatch.event, allEvents)
-      return `${eventMatch.negation ? eventMatch.negation + ' ' : ''}${eventMatch.proposition} <strong>${event}</strong>}`;
+      return `${eventMatch.negation ? eventMatch.negation + ' ' : ''}${eventMatch.proposition} <strong>${event}</strong>`;
     }
     const eventWithTimeMatch = event.match(this.eventWithTimePattern)?.groups;
     if (eventWithTimeMatch) {
