@@ -1,9 +1,17 @@
 import CreateDiagramInterface from "../interfaces/CreateDiagramInterface";
 
-
-import {events as contractEvents, states as contractStates} from "../enums/symboleo/Contract"
-import {events as obligationEvents, states as obligationStates} from "../enums/symboleo/Obligation"
-import {events as powerEvents, states as powerStates} from "../enums/symboleo/Power"
+import {
+  events as contractEvents,
+  states as contractStates,
+} from "../enums/symboleo/Contract";
+import {
+  events as obligationEvents,
+  states as obligationStates,
+} from "../enums/symboleo/Obligation";
+import {
+  events as powerEvents,
+  states as powerStates,
+} from "../enums/symboleo/Power";
 
 class CreateDiagramSymboleo implements CreateDiagramInterface {
   oblViolationPattern =
@@ -12,20 +20,22 @@ class CreateDiagramSymboleo implements CreateDiagramInterface {
   suspendContractPattern =
     /(cSUSPENDED|cSUSPENSION|Suspended|Suspension)\((.+?)\)/;
   resumeContractPattern = /(cRESUMED|Resumed)\((.+?)\)/;
-  terminateContractPattern = /(cTERMINATED|Terminated)\((.+?)\)/;
+  terminateContractPattern =
+    /(cTERMINATED|Terminated|cUNSECCESSFUL_TERMINATION)\((.+?)\)/;
   revokePartyPattern = /(cREVOKED_PARTY|RevokedParty|UnAssign)\((.+?)\)/;
   assignPartyPattern = /(cASSIGNED_PARTY|AssignedParty)\((.+?)\)/;
 
-  
-  eventPattern = /(?<negation>(NOT|Not|not))?\(?(?<proposition>happens|Happens)\((?<event>.+?)\)\(?/;
-  eventWithTimePattern = /(?<negation>(NOT|Not|not))?\(?(?<proposition>HappensBefore|happensBefore|HappensAfter|happensAfter)\((?<event>.+?),(?<time>.+?)\)\)?/
+  eventPattern =
+    /(?<negation>(NOT|Not|not))?\(?(?<proposition>happens|Happens)\((?<event>.+?)\)\(?/;
+  eventWithTimePattern =
+    /(?<negation>(NOT|Not|not))?\(?(?<proposition>HappensBefore|happensBefore|HappensAfter|happensAfter)\((?<event>.+?),(?<time>.+?)\)\)?/;
   happensWithinPattern =
-  /(?<negation>(NOT|Not|not))?\(?(?<proposition>HappensWithin|happensWithin)\((?<event>.+?),(?<interval>.+?)\)\)?/;
+    /(?<negation>(NOT|Not|not))?\(?(?<proposition>HappensWithin|happensWithin)\((?<event>.+?),(?<interval>.+?)\)\)?/;
   occursPattern =
     /(?<negation>(NOT|Not|not))?\(?(?<proposition>Occurs|occurs)\((?<situation>.+?),(?<interval>.+?)\)\)?/;
 
   contract: Contract = {
-    name: '',
+    name: "",
     parts: [],
     obligations: [],
     powers: [],
@@ -77,7 +87,10 @@ class CreateDiagramSymboleo implements CreateDiagramInterface {
               obligationMatch,
               legalPosition.name,
             ])
-          : map.condition.push([this.formatEvent(legalPosition.trigger), legalPosition.name]);
+          : map.condition.push([
+              this.formatEvent(legalPosition.trigger),
+              legalPosition.name,
+            ]);
       });
     return map;
   }
@@ -305,46 +318,89 @@ class CreateDiagramSymboleo implements CreateDiagramInterface {
 
   formatEvent(event: string): string {
     const eventMatch = event.match(this.eventPattern)?.groups;
-    const allEvents = {...contractEvents, ...obligationEvents, ...powerEvents}
-    const allStates = {...contractStates, ...obligationStates, ...powerStates}
+    const allEvents = {
+      ...contractEvents,
+      ...obligationEvents,
+      ...powerEvents,
+    };
+    const allStates = {
+      ...contractStates,
+      ...obligationStates,
+      ...powerStates,
+    };
     if (eventMatch) {
-      const event = this.formatPropositionEvent(eventMatch.event, allEvents)
-      return `${eventMatch.negation ? eventMatch.negation + ' ' : ''}${eventMatch.proposition} <strong>${event}</strong>`;
+      const event = this.formatPropositionEvent(eventMatch.event, allEvents);
+      return `${eventMatch.negation ? eventMatch.negation + " " : ""}${
+        eventMatch.proposition
+      } <strong>${event}</strong>`;
     }
     const eventWithTimeMatch = event.match(this.eventWithTimePattern)?.groups;
     if (eventWithTimeMatch) {
-      const proposition = eventWithTimeMatch.proposition.split(/(?=[A-Z][^A-Z])/);
-      const event = this.formatPropositionEvent(eventWithTimeMatch.event.trim(), allEvents)
-      const time = this.formatPropositionEvent(eventWithTimeMatch.time.trim(), allEvents)
-      return `${eventWithTimeMatch.negation ? eventWithTimeMatch.negation + ' ' : ''}${proposition[0]} <strong>${event}</strong> ${proposition[1]} <strong>${time}</strong>`;
+      const proposition =
+        eventWithTimeMatch.proposition.split(/(?=[A-Z][^A-Z])/);
+      const event = this.formatPropositionEvent(
+        eventWithTimeMatch.event.trim(),
+        allEvents
+      );
+      const time = this.formatPropositionEvent(
+        eventWithTimeMatch.time.trim(),
+        allEvents
+      );
+      return `${
+        eventWithTimeMatch.negation ? eventWithTimeMatch.negation + " " : ""
+      }${proposition[0]} <strong>${event}</strong> ${
+        proposition[1]
+      } <strong>${time}</strong>`;
     }
     const happensWithinMatch = event.match(this.happensWithinPattern)?.groups;
     if (happensWithinMatch) {
-      const proposition = happensWithinMatch.proposition.split(/(?=[A-Z][^A-Z])/);
-      const event = this.formatPropositionEvent(happensWithinMatch.event.trim(), allEvents)
-      const interval = this.formatPropositionEvent(happensWithinMatch.interval.trim(), allStates)
-      return `${happensWithinMatch.negation ? happensWithinMatch.negation + ' ' : ''}${proposition[0]} <strong>${event}</strong> ${proposition[1]} <strong>${interval}</strong>`;
+      const proposition =
+        happensWithinMatch.proposition.split(/(?=[A-Z][^A-Z])/);
+      const event = this.formatPropositionEvent(
+        happensWithinMatch.event.trim(),
+        allEvents
+      );
+      const interval = this.formatPropositionEvent(
+        happensWithinMatch.interval.trim(),
+        allStates
+      );
+      return `${
+        happensWithinMatch.negation ? happensWithinMatch.negation + " " : ""
+      }${proposition[0]} <strong>${event}</strong> ${
+        proposition[1]
+      } <strong>${interval}</strong>`;
     }
     const occursMatch = event.match(this.occursPattern)?.groups;
     if (occursMatch) {
-      const situation = this.formatPropositionEvent(occursMatch.situation, allStates)
-      const interval = this.formatPropositionEvent(occursMatch.interval, allStates)
-      return `${occursMatch.negation ? occursMatch.negation + ' ' : ''}${occursMatch.proposition} <strong>${situation}</strong> <strong>${interval}</strong>`;
+      const situation = this.formatPropositionEvent(
+        occursMatch.situation,
+        allStates
+      );
+      const interval = this.formatPropositionEvent(
+        occursMatch.interval,
+        allStates
+      );
+      return `${occursMatch.negation ? occursMatch.negation + " " : ""}${
+        occursMatch.proposition
+      } <strong>${situation}</strong> <strong>${interval}</strong>`;
     }
     return event;
   }
 
-  formatPropositionEvent(proposition: string, allEvents: {[key: string]: string}) : string {
-    const eventsKeys = Object.keys(allEvents).join('|')
-    const regex = new RegExp(`(?<event>${eventsKeys})\\((?<object>[a-zA-Z0-9]+)\\)?`)
-    const match = proposition.match(regex)
-    if(match && match.groups?.event && match.groups?.object) {
-      const eventDescription = allEvents[match.groups?.event]
-      return `${eventDescription} ${match.groups.object}`
-
+  formatPropositionEvent(
+    proposition: string,
+    allEvents: { [key: string]: string }
+  ): string {
+    const eventsKeys = Object.keys(allEvents).join("|");
+    const regex = new RegExp(
+      `(?<event>${eventsKeys})\\((?<object>[a-zA-Z0-9]+)\\)?`
+    );
+    const match = proposition.match(regex);
+    if (match && match.groups?.event && match.groups?.object) {
+      const eventDescription = allEvents[match.groups?.event];
+      return `${eventDescription} ${match.groups.object}`;
     }
-    return proposition
-
+    return proposition;
   }
 }
 

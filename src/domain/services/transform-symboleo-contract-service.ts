@@ -1,12 +1,11 @@
 import ContractTransformationInterface from "../interfaces/ContractTransformationInterface";
 
-
 class ContractTransformationSymboleoService
   implements ContractTransformationInterface
 {
-  regexDomain = /^Domain\s(?<domainName>\w*\d*)\n+(?<domains>.*)endDomain/s;
+  regexDomain = /Domain\s(?<domainName>\w*)\r?\n+(?<domains>.*)endDomain/s;
   regexContract =
-    /Contract\s(?<contractName>\w*\d*)\s\((?<parameters>.*)\)\n+Declarations/s;
+    /Contract\s(?<contractName>\w*)\s+\((?<parameters>.*)\)(\r?\n)+Declarations/s;
   regexPowers = /Powers(?<powers>.*)Constraints/s;
   regexObligations = /Obligations(?<obligations>.*)Surviving Obligations/s;
   regexSurvivingObls = /Surviving Obligations(?<obligations>.*)Powers/s;
@@ -17,7 +16,7 @@ class ContractTransformationSymboleoService
   ): string[] {
     const domains: Domain[] = this.createDomain(domain);
     const roleDomains = domains
-      .filter((domain) => domain.specialization === "Role")
+      .filter((domain) => domain.specialization?.toUpperCase() === "ROLE")
       .map((domain) => domain.name);
     const contractParameters = this.readContractParameters(
       contract?.parameters
