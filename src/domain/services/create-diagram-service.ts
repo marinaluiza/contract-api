@@ -1,5 +1,6 @@
 import jsonModel from "../../resources/diagramModel.json";
 import CreateDiagramInterface from "../interfaces/CreateDiagramInterface";
+import { DiagramInterface, TransitionInterface } from "../interfaces/InterfaceDiagram";
 
 class CreateDiagram {
   createDiagram: CreateDiagramInterface;
@@ -11,7 +12,7 @@ class CreateDiagram {
   public execute(contract: Contract) {
     this.createDiagram.setContract(contract);
 
-    const newDiagram = { ...jsonModel };
+    const newDiagram : DiagramInterface = { ...jsonModel };
     const setOfFulfilledObligations = this.createDiagram.fulfillObligations();
     let {
       transitions: {
@@ -30,56 +31,58 @@ class CreateDiagram {
     } = newDiagram;
 
     newDiagram.name = contract.name;
-    create_contract.obligations = this.createDiagram.legalPositionsToBeCreated(
+    create_contract!.obligations = this.createDiagram.legalPositionsToBeCreated(
       contract.obligations
     );
-    create_contract.powers = this.createDiagram.legalPositionsToBeCreated(
+    create_contract!.powers = this.createDiagram.legalPositionsToBeCreated(
       contract.powers
     );
-    create_contract.parties = contract.parts;
+    create_contract!.parties = contract.parts;
 
-    activate_contract.obligations =
+
+    activate_contract!.obligations =
       this.createDiagram.legalPositionsToBeActivatedWithContract(
         contract.obligations
       );
-    activate_contract.powers =
+    activate_contract!.powers =
       this.createDiagram.legalPositionsToBeActivatedWithContract(
         contract.powers
       );
 
-    activate_obligation_power.events = [...this.createObligationsEvents(), ...this.createPowersEvents()];
+    activate_obligation_power!.events = [...this.createObligationsEvents(), ...this.createPowersEvents()];
 
-    suspend_contract.powers = this.createDiagram.powersThatSuspendContract();
-    suspend_contract.powers_activated =
+    suspend_contract!.powers = this.createDiagram.powersThatSuspendContract();
+    suspend_contract!.powers_activated =
       this.createDiagram.legalPositionsActivatedByContractSuspension(
         contract.powers
       );
-    suspend_contract.obligations_activated =
+    suspend_contract!.obligations_activated =
       this.createDiagram.legalPositionsActivatedByContractSuspension(
         contract.obligations
       );
 
-    resume_contract.powers = this.createDiagram.powersThatResumeContract();
-    revoke_party.powers = this.createDiagram.powersThatRevokeParty();
-    assign_party.powers = this.createDiagram.powersThatAssignParty();
+    resume_contract!.powers = this.createDiagram.powersThatResumeContract();
+    revoke_party!.powers = this.createDiagram.powersThatRevokeParty();
+    assign_party!.powers = this.createDiagram.powersThatAssignParty();
 
-    terminate_contract.powers =
+    terminate_contract!.powers =
       this.createDiagram.powersThatTerminateContract();
-    terminate_contract.obligations_unfulfilled =
+    terminate_contract!.obligations_unfulfilled =
       this.createDiagram.unfulfilledObligations(setOfFulfilledObligations);
 
-    fulfill_active_obligations.set_of_obligations = setOfFulfilledObligations;
+    fulfill_active_obligations!.set_of_obligations = setOfFulfilledObligations;
 
-    activate_surviving_obligation.events =
+    activate_surviving_obligation!.events =
       this.createDiagram.survivingWithConditions();
 
     successful_termination.surviving_obligations = this.createDiagram.survivingWhenSuccessfulTermination()
     unsuccessful_termination.surviving_obligations = this.createDiagram.survivingWhenUnsuccessfulTermination()
+   
     return newDiagram
   }
 
-  private createObligationsEvents = (): Transition[] => {
-    let events: Transition[] = [];
+  private createObligationsEvents = (): TransitionInterface[] => {
+    let events: TransitionInterface[] = [];
     if (this.createDiagram.oblTriggeredByPower.length > 0) {
       const eventsByPower = this.parseToEvent(
         this.createDiagram.oblTriggeredByPower,
@@ -107,8 +110,8 @@ class CreateDiagram {
     return events;
   };
 
-  private createPowersEvents = (): Transition[] => {
-    let events: Transition[] = [];
+  private createPowersEvents = (): TransitionInterface[] => {
+    let events: TransitionInterface[] = [];
     const powersToBeActivated = this.createDiagram.legalPositionsToBeActivated(
       this.createDiagram.contract.powers
     );
@@ -135,7 +138,7 @@ class CreateDiagram {
     toParse: string[][],
     eventPrevix: string,
     actionPrefix: string
-  ): Transition[] => {
+  ): TransitionInterface[] => {
     return toParse.map((obligation) => ({
       event: eventPrevix !== "" ? `${eventPrevix} <strong>${obligation[0]}</strong>` : this.createDiagram.formatEvent(obligation[0]),
       guard: "",

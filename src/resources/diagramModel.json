@@ -13,7 +13,7 @@
 			"source": "initial",
 			"target": "created",
 			"events": [{
-				"event": "Create contract",
+				"event": "Create",
 				"guard": "",
 				"actions": [
 					"Assign parties ${parties}",
@@ -21,23 +21,23 @@
 					"Create powers ${powers}"
 				]
 			}],
-  			"parties": [""],
-            "obligations": [""],
-            "powers": [""]
+  			"parties": [],
+            "obligations": [],
+            "powers": []
         },
 		"activate_contract":{
 			"source": "created",
 			"target": "in_effect",	
 			"events": [{
-				"event": "Activate contract",
+				"event": "Activate",
 				"guard": "effectiveDate = actualDate",
 				"actions": [
 					"Activate obligations ${obligations}",
 					"Activate powers ${powers}"
 				]
 			}],
-  			"obligations": [""],
- 	 		"powers": [""]
+  			"obligations": [],
+ 	 		"powers": []
 		},
 		"activate_obligation_power": {
 			"source": "in_effect",
@@ -45,38 +45,39 @@
 			"events": [{
 				"event": "${event}",
 				"guard": "",
-				"actions": [""]
+				"actions": []
 			}]
 		},
 		"suspend_contract":{
 			"source": "in_effect",
 			"target": "suspended",	
 			"events": [{
-				"event": "Suspended by powers ${powers}",
+				"event": "Suspend [ ${powers} ]",
 				"guard": "",
 				"actions": [
+					"Suspend all active obligations and powers",
 					"Activate obligations ${obligations_activated}",
 					"Activate powers ${powers_activated}"
 				]
 			}],
-  			"powers": [""],
-  			"obligations_activated": [""],
-  			"powers_activated": [""]
+  			"powers": [],
+  			"obligations_activated": [],
+  			"powers_activated": []
 		},
 		"resume_contract":{
 			"source": "suspended",
 			"target": "in_effect",	
 			"events": [{
-				"event": "Resumed by powers ${powers}",
+				"event": "Resume [ ${powers} ]",
 				"guard": "",
 				"actions": [
 					"Activate obligations ${obligations_activated}",
 					"Activate powers ${powers_activated}"
 				]
 			}],
-  			"powers": [""],
-			"obligations_activated": [""],
-  			"powers_activated": [""]
+  			"powers": [],
+			"obligations_activated": [],
+  			"powers_activated": []
  		},
 	
 		"revoke_party": {
@@ -87,7 +88,7 @@
 				"guard": "",
 				"actions": []
 			}],
-  			"powers": [""]
+  			"powers": []
 		},
 
 		"assign_party": {
@@ -98,7 +99,7 @@
 				"guard": "",
 				"actions": []
 			}],
-  			"powers": [""]
+  			"powers": []
 		},
 	
 	
@@ -110,7 +111,7 @@
 				"guard": "",
 				"actions": []
 			}],
-			"set_of_obligations": [[""]]
+			"set_of_obligations": [[]]
 		},
 
 		"activate_surviving_obligation": {
@@ -119,7 +120,7 @@
 			"events": [{
 				"event": "{$event}",
 				"guard": "",
-				"actions": [""]
+				"actions": []
 			}]
 		},
 
@@ -128,7 +129,7 @@
 			"target": "unsuccessful_termination",	
 			"event": "terminate",
 			"events": [{
-				"event": "Terminated by powers ${powers}",
+				"event": "Terminate [ ${powers} ]",
 				"guard": "",
 				"actions": []
 			},
@@ -137,8 +138,8 @@
 				"guard": "",
 				"actions": []
 			}],
-			"powers": [""],
-			"obligations_unfulfilled": [[""]]
+			"powers": [],
+			"obligations_unfulfilled": [[]]
 		}
 		
 	},
@@ -146,12 +147,12 @@
 		"successful_termination": {
 			"when": "+ On Enter",
 			"action": "Activate surviving obligations ${surviving_obligations}",
-			"surviving_obligations": [""]
+			"surviving_obligations": []
 		},
 		"unsuccessful_termination": {
 			"when": "+ On Enter",
 			"action": "Activate surviving obligations ${surviving_obligations}",
-			"surviving_obligations": [""]
+			"surviving_obligations": []
 		}
 	}
 	

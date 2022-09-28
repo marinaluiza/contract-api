@@ -1,3 +1,5 @@
+import { TransitionInterface } from "./InterfaceDiagram";
+
 interface CreateDiagramInterface {
   contract: Contract;
   setFulfilledObligations: string[][];
@@ -22,7 +24,7 @@ interface CreateDiagramInterface {
   unfulfilledObligations(obligationsToUnfulfill: string[][]): string[][];
   fulfillObligations(): string[][];
   legalPositionsActivatedByContractSuspension(lp: LegalPosition[]): string[];
-  survivingWithConditions(): Transition[];
+  survivingWithConditions(): TransitionInterface[];
   formatEvent(event: string): string;
 }
 
