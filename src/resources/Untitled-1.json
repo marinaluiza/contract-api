@@ -1,0 +1,176 @@
+{
+    "name": "meatSaleC",
+    "states": {
+      "created": "Created",
+      "in_effect": "In Effect",
+      "suspended": "Suspended",
+      "successful_termination": "Successful Termination",
+      "unsuccessful_termination": "Unsuccessful Termination"
+    },
+    "transitions": {
+      "create_contract": {
+        "source": "initial",
+        "target": "created",
+        "events": [
+          {
+            "event": "Create",
+            "guard": "",
+            "actions": [
+              "Assign parties ${parties}",
+              "Create obligations ${obligations}",
+              "Create powers ${powers}"
+            ]
+          }
+        ],
+        "parties": [
+          "buyer",
+          "seller"
+        ],
+        "obligations": [
+          "O1",
+          "O2"
+        ],
+        "powers": []
+      },
+      "activate_contract": {
+        "source": "created",
+        "target": "in_effect",
+        "events": [
+          {
+            "event": "Activate",
+            "guard": "effectiveDate = actualDate",
+            "actions": [
+              "Activate obligations ${obligations}",
+              "Activate powers ${powers}"
+            ]
+          }
+        ],
+        "obligations": [
+          "O1",
+          "O2"
+        ],
+        "powers": []
+      },
+      "activate_obligation_power": {
+        "source": "in_effect",
+        "target": "in_effect",
+        "events": [
+          {
+            "event": "Obligation violation <strong>O2</strong>",
+            "guard": "",
+            "actions": [
+              "Activate obligation <strong>O3</strong>"
+            ]
+          },
+          {
+            "event": "Obligation violation <strong>O2</strong>",
+            "guard": "",
+            "actions": [
+              "Activate power <strong>P1</strong>"
+            ]
+          },
+          {
+            "event": "happens <strong>paidLate</strong> Within <strong>Suspension of obligation O1</strong>",
+            "guard": "",
+            "actions": [
+              "Activate power <strong>P2</strong>"
+            ]
+          },
+          {
+            "event": "NOT happens <strong>delivered</strong> Before <strong>10 DAYS AFTER delDueDate</strong>",
+            "guard": "",
+            "actions": [
+              "Activate power <strong>P3</strong>"
+            ]
+          }
+        ]
+      },
+      "replace_party": {
+        "source": "Active",
+        "target": "Active",
+        "events": [
+          {
+            "event": "Replace party ${powers}",
+            "guard": "",
+            "actions": [
+              "Replace (${old_party}, ${new_party})"
+            ]
+          }
+        ],
+        "powers": [],
+        "old_party": "",
+        "new_party": ""
+      },
+      "fulfill_active_obligations": {
+        "source": "in_effect",
+        "target": "successful_termination",
+        "events": [
+          {
+            "event": "Fulfill active obligations ${set_of_obligations}",
+            "guard": "",
+            "actions": []
+          }
+        ],
+        "set_of_obligations": [
+          [
+            "O1",
+            "O2"
+          ],
+          [
+            "O1",
+            "O3"
+          ]
+        ]
+      },
+      "activate_surviving_obligation": {
+        "source": "successful_termination",
+        "target": "successful_termination",
+        "events": []
+      },
+      "terminate_contract": {
+        "source": "Active",
+        "target": "unsuccessful_termination",
+        "event": "terminate",
+        "events": [
+          {
+            "event": "Terminate [ ${powers} ]",
+            "guard": "",
+            "actions": []
+          },
+          {
+            "event": "Unfulfilled obligations ${obligations_unfulfilled}",
+            "guard": "",
+            "actions": []
+          }
+        ],
+        "powers": [
+          "P3"
+        ],
+        "obligations_unfulfilled": [
+          [
+            "~ O1",
+            "~ O2"
+          ],
+          [
+            "~ O1",
+            "~ O3"
+          ]
+        ]
+      }
+    },
+    "state_actions": {
+      "successful_termination": {
+        "when": "+ On Enter",
+        "action": "Activate surviving obligations ${surviving_obligations}",
+        "surviving_obligations": [
+          "SO1",
+          "SO2"
+        ]
+      },
+      "unsuccessful_termination": {
+        "when": "+ On Enter",
+        "action": "Activate surviving obligations ${surviving_obligations}",
+        "surviving_obligations": []
+      }
+    }
+  }

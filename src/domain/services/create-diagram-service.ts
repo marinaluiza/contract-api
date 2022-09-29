@@ -1,4 +1,5 @@
 import jsonModel from "../../resources/diagramModel.json";
+import { cleanTransitions } from "../../utils/utils";
 import CreateDiagramInterface from "../interfaces/CreateDiagramInterface";
 import { DiagramInterface, TransitionInterface } from "../interfaces/InterfaceDiagram";
 
@@ -12,7 +13,7 @@ class CreateDiagram {
   public execute(contract: Contract) {
     this.createDiagram.setContract(contract);
 
-    const newDiagram : DiagramInterface = { ...jsonModel };
+    let newDiagram : DiagramInterface = { ...jsonModel };
     const setOfFulfilledObligations = this.createDiagram.fulfillObligations();
     let {
       transitions: {
@@ -22,8 +23,7 @@ class CreateDiagram {
         suspend_contract,
         resume_contract,
         fulfill_active_obligations,
-        revoke_party,
-        assign_party,
+        replace_party,
         terminate_contract,
         activate_surviving_obligation,
       },
@@ -62,8 +62,15 @@ class CreateDiagram {
       );
 
     resume_contract!.powers = this.createDiagram.powersThatResumeContract();
-    revoke_party!.powers = this.createDiagram.powersThatRevokeParty();
-    assign_party!.powers = this.createDiagram.powersThatAssignParty();
+    const revokeResult = this.createDiagram.powersThatRevokeParty();
+    const revokePowers = revokeResult.map(r => r.power)
+    const assignResult = this.createDiagram.powersThatRevokeParty();
+    const assignPowers = assignResult.map(r => r.power)
+    replace_party!.powers = [...assignPowers, ...revokePowers]
+    replace_party!.old_party = revokeResult?.[0]?.party || ""
+    replace_party!.new_party = assignResult?.[0]?.party || ""
+    // revoke_party!.powers = ;
+    // assign_party!.powers = this.createDiagram.powersThatAssignParty();
 
     terminate_contract!.powers =
       this.createDiagram.powersThatTerminateContract();
@@ -78,6 +85,7 @@ class CreateDiagram {
     successful_termination.surviving_obligations = this.createDiagram.survivingWhenSuccessfulTermination()
     unsuccessful_termination.surviving_obligations = this.createDiagram.survivingWhenUnsuccessfulTermination()
    
+    newDiagram = cleanTransitions(newDiagram)
     return newDiagram
   }
 

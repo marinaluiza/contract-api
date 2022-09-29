@@ -4,19 +4,19 @@ export const cleanTransitions = (diagram: DiagramInterface):  DiagramInterface  
     const filteredDiagram = {...diagram}
     const transitions = filteredDiagram.transitions
     const transitionKeys = Object.keys(transitions).forEach((key) => {
-        if (key === "create_contract" && 
-            transitions.create_contract!.obligations.length === 0 &&
-            transitions.create_contract!.powers.length === 0 &&
-            transitions.create_contract!.parties.length === 0
-        ) {
-            delete filteredDiagram.transitions.create_contract
-        }
-        if (key === "activate_contract" && 
-            transitions.activate_contract!.obligations.length === 0 &&
-            transitions.activate_contract!.powers.length === 0
-        ) {
-            delete filteredDiagram.transitions.activate_contract
-        }
+        // if (key === "create_contract" && 
+        //     transitions.create_contract!.obligations.length === 0 &&
+        //     transitions.create_contract!.powers.length === 0 &&
+        //     transitions.create_contract!.parties.length === 0
+        // ) {
+        //     delete filteredDiagram.transitions.create_contract
+        // }
+        // if (key === "activate_contract" && 
+        //     transitions.activate_contract!.obligations.length === 0 &&
+        //     transitions.activate_contract!.powers.length === 0
+        // ) {
+        //     delete filteredDiagram.transitions.activate_contract
+        // }
         if (key === "suspend_contract" && 
             transitions.suspend_contract!.powers_activated.length === 0 &&
             transitions.suspend_contract!.obligations_activated.length === 0 &&
@@ -56,3 +56,4 @@ export const cleanTransitions = (diagram: DiagramInterface):  DiagramInterface  
    
     return filteredDiagram
 }
+

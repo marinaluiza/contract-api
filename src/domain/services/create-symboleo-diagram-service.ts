@@ -12,6 +12,7 @@ import {
   events as powerEvents,
   states as powerStates,
 } from "../enums/symboleo/Power";
+import { TransitionInterface } from "../interfaces/InterfaceDiagram";
 
 class CreateDiagramSymboleo implements CreateDiagramInterface {
   oblViolationPattern =
@@ -22,8 +23,8 @@ class CreateDiagramSymboleo implements CreateDiagramInterface {
   resumeContractPattern = /(cRESUMED|Resumed)\((.+?)\)/;
   terminateContractPattern =
     /(cTERMINATED|Terminated|cUNSECCESSFUL_TERMINATION)\((.+?)\)/;
-  revokePartyPattern = /(cREVOKED_PARTY|RevokedParty|UnAssign)\((.+?)\)/;
-  assignPartyPattern = /(cASSIGNED_PARTY|AssignedParty)\((.+?)\)/;
+  revokePartyPattern = /(cREVOKED_PARTY|RevokedParty|UnAssign)\((?<party>.+?)\)/;
+  assignPartyPattern = /(cASSIGNED_PARTY|AssignedParty)\((?<party>.+?)\)/;
 
   eventPattern =
     /(?<negation>(NOT|Not|not))?\(?(?<proposition>happens|Happens)\((?<event>.+?)\)\(?/;
@@ -127,16 +128,22 @@ class CreateDiagramSymboleo implements CreateDiagramInterface {
       .map((obl) => obl.name);
   }
 
-  powersThatRevokeParty(): string[] {
+  powersThatRevokeParty(): {power: string, party: string}[] {
     return this.contract.powers
       .filter((pwr) => this.revokePartyPattern.test(pwr.consequent))
-      .map((pwr) => pwr.name);
+      .map((pwr) => {
+        const powerMatch = pwr.consequent.match(this.revokePartyPattern)?.groups?.party;
+        return {power: pwr.name, party: powerMatch || ""}
+      });
   }
 
-  powersThatAssignParty(): string[] {
+  powersThatAssignParty():  {power: string, party: string}[] {
     return this.contract.powers
       .filter((pwr) => this.assignPartyPattern.test(pwr.consequent))
-      .map((pwr) => pwr.name);
+      .map((pwr) => {
+        const powerMatch = pwr.consequent.match(this.assignPartyPattern)?.groups?.party;
+        return {power: pwr.name, party: powerMatch || ""}
+      });
   }
 
   unfulfilledObligations(obligationsToUnfulfill: string[][]): string[][] {
@@ -215,7 +222,7 @@ class CreateDiagramSymboleo implements CreateDiagramInterface {
       .map((lp) => lp.name);
   }
 
-  survivingWithConditions(): Transition[] {
+  survivingWithConditions(): TransitionInterface[] {
     return this.contract.survivingObligations
       .filter(
         (so) => so.trigger && !this.terminateContractPattern.test(so.trigger)

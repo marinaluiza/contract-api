@@ -1,0 +1,21 @@
+{"revoke_party": {
+    "source": "Active",
+    "target": "unassign",	
+    "events": [{
+        "event": "Revoke parties by power ${powers}",
+        "guard": "",
+        "actions": []
+    }],
+      "powers": []
+},
+
+"assign_party": {
+    "source": "unassign",
+    "target": "Active",	
+    "events": [{
+        "event": "Assign parties by power ${powers}",
+        "guard": "",
+        "actions": []
+    }],
+      "powers": []
+}}

@@ -19,8 +19,8 @@ interface CreateDiagramInterface {
   powersThatTerminateContract(): string[];
   survivingWhenUnsuccessfulTermination(): string[];
   survivingWhenSuccessfulTermination(): string[];
-  powersThatRevokeParty(): string[];
-  powersThatAssignParty(): string[];
+  powersThatRevokeParty(): {power: string, party: string}[];
+  powersThatAssignParty(): {power: string, party: string}[];
   unfulfilledObligations(obligationsToUnfulfill: string[][]): string[][];
   fulfillObligations(): string[][];
   legalPositionsActivatedByContractSuspension(lp: LegalPosition[]): string[];

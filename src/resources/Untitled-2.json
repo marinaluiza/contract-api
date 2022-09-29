@@ -1,0 +1,196 @@
+{
+  "name": "serviceSaleC",
+  "states": {
+    "created": "Created",
+    "in_effect": "In Effect",
+    "suspended": "Suspended",
+    "successful_termination": "Successful Termination",
+    "unsuccessful_termination": "Unsuccessful Termination"
+  },
+  "transitions": {
+    "create_contract": {
+      "source": "initial",
+      "target": "created",
+      "events": [
+        {
+          "event": "Create",
+          "guard": "",
+          "actions": [
+            "Assign parties ${parties}",
+            "Create obligations ${obligations}",
+            "Create powers ${powers}"
+          ]
+        }
+      ],
+      "parties": [
+        "techCompanySeller",
+        "techCompanyBuyer"
+      ],
+      "obligations": [
+        "O1.5",
+        "O2.5III"
+      ],
+      "powers": []
+    },
+    "activate_contract": {
+      "source": "created",
+      "target": "in_effect",
+      "events": [
+        {
+          "event": "Activate",
+          "guard": "effectiveDate = actualDate",
+          "actions": [
+            "Activate obligations ${obligations}",
+            "Activate powers ${powers}"
+          ]
+        }
+      ],
+      "obligations": [
+        "O1.5",
+        "O2.5III"
+      ],
+      "powers": []
+    },
+    "activate_obligation_power": {
+      "source": "in_effect",
+      "target": "in_effect",
+      "events": [
+        {
+          "event": "Obligation violation <strong>O2.5III</strong>",
+          "guard": "",
+          "actions": [
+            "Activate obligation <strong>O3.5</strong>"
+          ]
+        },
+        {
+          "event": "happens <strong>endOfMonth</strong>",
+          "guard": "",
+          "actions": [
+            "Activate obligation <strong>O2.3VII</strong>"
+          ]
+        },
+        {
+          "event": "Obligation violation <strong>O2.3VII</strong>",
+          "guard": "",
+          "actions": [
+            "Activate power <strong>P3.5</strong>"
+          ]
+        },
+        {
+          "event": "happens <strong>rescisionDeal</strong>",
+          "guard": "",
+          "actions": [
+            "Activate power <strong>P12.5</strong>"
+          ]
+        }
+      ]
+    },
+    "replace_party": {
+      "source": "Active",
+      "target": "Active",
+      "events": [
+        {
+          "event": "Replace party ${powers}",
+          "guard": "",
+          "actions": [
+            "Replace (${old_party}, ${new_party})"
+          ]
+        }
+      ],
+      "powers": [],
+      "old_party": "",
+      "new_party": ""
+    },
+    "fulfill_active_obligations": {
+      "source": "in_effect",
+      "target": "successful_termination",
+      "events": [
+        {
+          "event": "Fulfill active obligations ${set_of_obligations}",
+          "guard": "",
+          "actions": []
+        }
+      ],
+      "set_of_obligations": [
+        [
+          "O1.5",
+          "O2.5III",
+          "O2.3VII"
+        ],
+        [
+          "O1.5",
+          "O3.5",
+          "O2.3VII"
+        ]
+      ]
+    },
+    "activate_surviving_obligation": {
+      "source": "successful_termination",
+      "target": "successful_termination",
+      "events": [
+        {
+          "event": "happens <strong>MaintenceByDemandOption</strong>",
+          "guard": "",
+          "actions": [
+            "Activate obligation <strong>SO4.2</strong>"
+          ]
+        },
+        {
+          "event": "happens <strong>maintenceByMonthOption</strong>",
+          "guard": "",
+          "actions": [
+            "Activate obligation <strong>SO4.3</strong>"
+          ]
+        }
+      ]
+    },
+    "terminate_contract": {
+      "source": "Active",
+      "target": "unsuccessful_termination",
+      "event": "terminate",
+      "events": [
+        {
+          "event": "Terminate [ ${powers} ]",
+          "guard": "",
+          "actions": []
+        },
+        {
+          "event": "Unfulfilled obligations ${obligations_unfulfilled}",
+          "guard": "",
+          "actions": []
+        }
+      ],
+      "powers": [
+        "P12.5"
+      ],
+      "obligations_unfulfilled": [
+        [
+          "~ O1.5",
+          "~ O2.5III",
+          "~ O2.3VII"
+        ],
+        [
+          "~ O1.5",
+          "~ O3.5",
+          "~ O2.3VII"
+        ]
+      ]
+    }
+  },
+  "state_actions": {
+    "successful_termination": {
+      "when": "+ On Enter",
+      "action": "Activate surviving obligations ${surviving_obligations}",
+      "surviving_obligations": [
+        "SO6.1"
+      ]
+    },
+    "unsuccessful_termination": {
+      "when": "+ On Enter",
+      "action": "Activate surviving obligations ${surviving_obligations}",
+      "surviving_obligations": [
+        "SO5.2"
+      ]
+    }
+  }
+}

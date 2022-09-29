@@ -22,7 +22,7 @@ export interface DiagramInterface {
         created: string;
         in_effect: string;
         suspended: string;
-        unassign: string;
+        unassign?: string;
         successful_termination: string;
         unsuccessful_termination: string;
     };
@@ -46,6 +46,11 @@ export interface DiagramInterface {
             obligations_activated: string[] | [];
             powers_activated: string[] | [];
             powers: string[] | [];
+        };
+        replace_party?: TransitionDiagramInterface & {
+            powers: string[] | [];
+            old_party: string,
+			new_party: string
         };
         revoke_party?: TransitionDiagramInterface & {
             powers: string[] | [];

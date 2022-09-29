@@ -4,7 +4,6 @@
 		"created": "Created",
 		"in_effect": "In Effect",
 		"suspended": "Suspended",
-		"unassign": "Unassign",
 		"successful_termination": "Successful Termination",		
 		"unsuccessful_termination": "Unsuccessful Termination"
 	},
@@ -79,30 +78,18 @@
 			"obligations_activated": [],
   			"powers_activated": []
  		},
-	
-		"revoke_party": {
+		"replace_party": {
 			"source": "Active",
-			"target": "unassign",	
-			"events": [{
-				"event": "Revoke parties by power ${powers}",
-				"guard": "",
-				"actions": []
-			}],
-  			"powers": []
-		},
-
-		"assign_party": {
-			"source": "unassign",
 			"target": "Active",	
 			"events": [{
-				"event": "Assign parties by power ${powers}",
+				"event": "Replace party ${powers}",
 				"guard": "",
-				"actions": []
+				"actions": ["Replace (${old_party}, ${new_party})"]
 			}],
-  			"powers": []
+  			"powers": [],
+			"old_party": "",
+			"new_party": ""
 		},
-	
-	
 		"fulfill_active_obligations": {
 			"source": "in_effect",
 			"target": "successful_termination",	
